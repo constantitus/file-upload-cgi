@@ -1,0 +1,16 @@
+* TODO
+  - (x) Get the base thing working in go
+  - ( ) Login form (username and password)
+        parse login and check against file
+  - ( ) Hash the password
+        Each user gets their own folder and hashed password file
+  - (-) First login, then upload.
+        remember logged users
+  - ( ) optionally store login in cookies
+  - ( ) Logs
+  - ( ) Progress bar
+  - ( ) UI for each user to download shit
+  - ( ) Option to replace 
+* steps
+  - Actually get the html working. Don't write any file, study the output
+  - 1. Split everything into fields
