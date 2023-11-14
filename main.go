@@ -2,10 +2,16 @@ package main
 
 import (
 	"bufio"
+	"crypto/sha256"
+	"encoding/hex"
 	"fmt"
 	"os"
 	"strings"
 )
+
+// Should end with "/" or left blank for relative path
+const userDir = ""
+const storageDir = ""
 
 func main() {
     // web header
@@ -25,9 +31,9 @@ func main() {
             buffer = append(buffer, tmp)
         }
     }
-    fmt.Printf("<p>env:[%s]", env)
-    fmt.Printf("<p>buf:[%s]", buffer)
-    //fmt.Printf("<p>boundary:[%s]", boundary)
+    // fmt.Printf("<p>env:[%s]", env)
+    // fmt.Printf("<p>buf:[%s]", buffer)
+    // fmt.Printf("<p>boundary:[%s]", boundary)
 
     var file_name string
     var file_contents string
@@ -56,6 +62,7 @@ func main() {
             username, _ = strings.CutSuffix(tmp_user, "\r\n--")
             continue
         }
+
         tmp_pass, pass_status := strings.CutPrefix(v, "name=\"pass\"\r\n\r\n")
         if pass_status {
             password, _ = strings.CutSuffix(tmp_pass, "\r\n--")
@@ -63,16 +70,38 @@ func main() {
         }
     }
 
-    fmt.Printf("<p>file_name:[%s]", file_name)
+    /* fmt.Printf("<p>file_name:[%s]", file_name)
     fmt.Printf("<p>file_contents:[%s]", file_contents)
     fmt.Printf("<p>username:[%s]", username)
-    fmt.Printf("<p>password:[%s]", password)
+    fmt.Printf("<p>password:[%s]", password) */
+
+    // Credentials checking
+    cred_valid := false
+    if username != "" {
+        cred_file, err := os.ReadFile(userDir + username + ".txt")
+        if err != nil {
+            fmt.Printf("<p>User not found")
+        } else {
+            tmp := sha256.New()
+            tmp.Write([]byte(password))
+            pass_hashed := hex.EncodeToString(tmp.Sum(nil))
+            file_string := strings.TrimSuffix(string(cred_file), "\n")
+            if pass_hashed == file_string {
+                cred_valid = true
+            } else {
+                fmt.Printf("<p>Wrong Password")
+            }
+        }
+    }
 
     // Writing
     // TODO: check file before, maybe ask the user if they want to overwrite
     // if the file doesn't exist, create and write
-    if uploading {
-        file, err := os.OpenFile(file_name, os.O_RDWR|os.O_CREATE, 0644)
+    if cred_valid && file_name != "" {
+        file, err := os.OpenFile(
+            storageDir + username + "/" + file_name,
+            os.O_RDWR|os.O_CREATE,
+            0644)
         filestat, _ := file.Stat()
         if err != nil {
             fmt.Printf("<p>Error: %s", err)
@@ -80,7 +109,7 @@ func main() {
         if filestat.Size() > 0 {
             fmt.Println("<p>The file already exists")
         } else {
-            filesize, err := file.WriteString(username + "\n" + password)
+            filesize, err := file.WriteString(file_contents)
             if err != nil {
                 fmt.Printf("<p> %s", err)
             } else {
@@ -91,17 +120,18 @@ func main() {
     }
 
     // Printing
-    fmt.Printf("<form method=\"post\" enctype=\"multipart/form-data\"><input type=\"file\" name=\"the_file\" class=\"form\"><p>")
-    // check for password
-    // TODO: make users and store both usernames and passwords
-    if file_contents != "" { // TODO: check the proper thing
-        fmt.Printf("<input type=\"hidden\" name=\"user\" value=\"%s\">", password)
+    fmt.Printf("<form method=\"post\" enctype=\"multipart/form-data\">")
+    if cred_valid {
+        fmt.Printf("<input type=\"hidden\" name=\"user\" value=\"%s\">", username)
         fmt.Printf("<input type=\"hidden\" name=\"pass\" value=\"%s\">", password)
+
+        fmt.Printf("<input type=\"file\" name=\"the_file\" class=\"form\"><p>")
+        fmt.Printf("<input type=\"submit\" value=\"Upload file\" class=\"button\"></form></body></html>")
     } else {
-        fmt.Printf("Username <input type=\"text\" name=\"user\" class=\"field\"><p>")
-        fmt.Printf("Password <input type=\"password\" name=\"pass\" class=\"field\"><p>")
+        fmt.Printf("<p>Username <input type=\"text\" name=\"user\" value=\"%s\" class=\"field\"><p>", username)
+        fmt.Printf("<p>Password <input type=\"password\" name=\"pass\" value=\"%s\" class=\"field\"><p>", password)
+        fmt.Printf("<input type=\"submit\" value=\"Login\" class=\"button\"></form></body></html>")
     }
-    fmt.Printf("<input type=\"submit\" value=\"Upload file\" class=\"upload\"></form></body></html>")
 
     fmt.Printf("</div>")
     fmt.Printf("</body></html>")
