@@ -1,0 +1,62 @@
+/* This is simple style I wrote to test the login and upload page. */
+
+body {
+    text-align: justify;
+    word-break: break-word;
+    color: rgb(232, 234, 237);
+    padding: 0;
+    margin: 0;
+}
+
+p, b, a {
+    margin-top: 1px;
+    margin-bottom: 1px;
+    margin: 1px;
+}
+
+a, a:hover, a:visited, a:active {
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+}
+
+.box {
+    width: 400px;
+    height: 400px;
+    position: absolute;
+    top: calc(50vh - 200px);
+    left: calc(50vw - 200px);
+    overflow: hidden;
+    backdrop-filter: blur(6px);
+    background-image: linear-gradient(to right bottom, rgba(26, 26, 26, 0.2), rgba(26, 26, 26, 0.3));
+}
+
+.box h1, p {
+    text-align: center;
+}
+
+.box input, .form {
+    display: block;
+    width: 300px;
+    margin: 20px auto;
+    padding: 15px;
+    background: rgba(0,0,0,0.2);
+    color: #fff;
+    border: 0;
+}
+
+.box input:focus,.box input:active,.box button:focus,.box button:active{
+    outline: none;
+}
+
+.box .button {
+    background: #742ECC;
+    border: 0;
+    color: #fff;
+    padding: 10px;
+    font-size: 20px;
+    width: 330px;
+    margin: 20px auto;
+    display: block;
+    cursor: pointer;
+}

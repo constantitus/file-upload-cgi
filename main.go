@@ -9,15 +9,33 @@ import (
 	"strings"
 )
 
+const css = "styles.css"
+
 // Should end with "/" or left blank for relative path
 const userDir = ""
 const storageDir = ""
+
+type file_t struct {
+    name string
+    content string
+}
+
+func new_file(name string, content string) (file file_t) {
+    file.name = name
+    file.content = content
+    return
+}
 
 func main() {
     // web header
     fmt.Printf("Content-Type: text/html; charset=utf-8\r\n\r\n")
     // TODO: css
-    fmt.Printf("<body><div class=\"frame box\">")
+    fmt.Printf("<!DOCTYPE html><html><head><title>upload</title>")
+    style, err := os.ReadFile(css)
+    if err == nil {
+        fmt.Printf("<style type=\"text/css\">%s</style>", string(style))
+    }
+
 
     var buffer []byte
     env := os.Getenv("CONTENT_TYPE")
@@ -31,19 +49,19 @@ func main() {
             buffer = append(buffer, tmp)
         }
     }
-    // fmt.Printf("<p>env:[%s]", env)
-    // fmt.Printf("<p>buf:[%s]", buffer)
-    // fmt.Printf("<p>boundary:[%s]", boundary)
 
-    var file_name string
-    var file_contents string
+    fmt.Printf("<p>buf:[%s]", buffer)
+
+    var files []file_t
+    /* var file_name string
+    var file_contents string */
     var username string
     var password string
 
     // Formatting
     input := strings.Split(string(buffer), boundary)
     for _, v := range input {
-        cut_status := false
+        var cut_status bool
         v, cut_status = strings.CutPrefix(v, "\r\nContent-Disposition: form-data; ")
         if !cut_status {
             continue
@@ -51,9 +69,10 @@ func main() {
 
         _, tmp, found_name := strings.Cut(v, "filename=\"")
         if found_name {
-            file_name, _, _ = strings.Cut(tmp, "\"")
+            tmp_name, _, _ := strings.Cut(tmp, "\"")
             _, tmp, _ = strings.Cut(v, "\r\n\r\n")
-            file_contents, _ = strings.CutSuffix(tmp, "\r\n--")
+            tmp_content, _ := strings.CutSuffix(tmp, "\r\n--")
+            files = append(files, new_file(tmp_name, tmp_content))
             continue
         }
 
@@ -70,17 +89,16 @@ func main() {
         }
     }
 
-    /* fmt.Printf("<p>file_name:[%s]", file_name)
-    fmt.Printf("<p>file_contents:[%s]", file_contents)
-    fmt.Printf("<p>username:[%s]", username)
-    fmt.Printf("<p>password:[%s]", password) */
+    fmt.Printf("<body><div class=\"box\">")
+    var message string
 
     // Credentials checking
     cred_valid := false
     if username != "" {
         cred_file, err := os.ReadFile(userDir + username + ".txt")
         if err != nil {
-            fmt.Printf("<p>User not found")
+            // Username not found
+            message += "<p>Wrong username/password"
         } else {
             tmp := sha256.New()
             tmp.Write([]byte(password))
@@ -89,50 +107,72 @@ func main() {
             if pass_hashed == file_string {
                 cred_valid = true
             } else {
-                fmt.Printf("<p>Wrong Password")
+                // Wrong password
+                message += "<p>Wrong username/password"
             }
         }
+    } else {
+        //blank the password when there's no username
+        password = ""
     }
 
     // Writing
-    // TODO: check file before, maybe ask the user if they want to overwrite
-    // if the file doesn't exist, create and write
-    if cred_valid && file_name != "" {
-        file, err := os.OpenFile(
-            storageDir + username + "/" + file_name,
-            os.O_RDWR|os.O_CREATE,
-            0644)
-        filestat, _ := file.Stat()
-        if err != nil {
-            fmt.Printf("<p>Error: %s", err)
-        }
-        if filestat.Size() > 0 {
-            fmt.Println("<p>The file already exists")
-        } else {
-            filesize, err := file.WriteString(file_contents)
-            if err != nil {
-                fmt.Printf("<p> %s", err)
-            } else {
-                fmt.Printf("<p> written %d bytes", filesize)
+    if cred_valid {
+        for _, file := range files {
+            if file.name == "" {
+                message += "<p>No file selected"
+                continue
             }
-            file.Close()
+            out, err := os.OpenFile(
+                storageDir + username + "/" + file.name,
+                os.O_RDWR|os.O_CREATE,
+                0644)
+            out_stat, _ := out.Stat()
+            if err != nil {
+                message += fmt.Sprintf("<p>Error: %s", err)
+            }
+            if out_stat.Size() > 0 {
+                message += fmt.Sprintf("<p>File already exists: %s", file.name)
+                // TODO: maybe ask the user if they want to overwrite
+            } else {
+                out_size, err := out.WriteString(file.content)
+                if err != nil {
+                    message += fmt.Sprintf("<p>%s", err)
+                } else {
+                    message += fmt.Sprintf("<p>Written %s (%d bytes)", file.name, out_size)
+                }
+                out.Close()
+            }
         }
     }
 
     // Printing
-    fmt.Printf("<form method=\"post\" enctype=\"multipart/form-data\">")
+    fmt.Print("<form method=\"post\" enctype=\"multipart/form-data\">")
     if cred_valid {
         fmt.Printf("<input type=\"hidden\" name=\"user\" value=\"%s\">", username)
         fmt.Printf("<input type=\"hidden\" name=\"pass\" value=\"%s\">", password)
 
-        fmt.Printf("<input type=\"file\" name=\"the_file\" class=\"form\"><p>")
-        fmt.Printf("<input type=\"submit\" value=\"Upload file\" class=\"button\"></form></body></html>")
+        fmt.Print("<h1>File Upload</h1>")
+        fmt.Print("<input type=\"file\" name=\"the_file\" multiple=\"multiple\" class=\"form\"><p>")
+        fmt.Print("<input type=\"submit\" value=\"Upload file\" class=\"button\"></form></body></html>")
     } else {
-        fmt.Printf("<p>Username <input type=\"text\" name=\"user\" value=\"%s\" class=\"field\"><p>", username)
-        fmt.Printf("<p>Password <input type=\"password\" name=\"pass\" value=\"%s\" class=\"field\"><p>", password)
-        fmt.Printf("<input type=\"submit\" value=\"Login\" class=\"button\"></form></body></html>")
+        fmt.Printf("<h1>Login</h1>")
+        fmt.Printf("<input type=\"text\" placeholder=\"Username\" name=\"user\" value=\"%s\" class=\"field\"><p>", username)
+        fmt.Printf("<input type=\"password\" placeholder=\"Password\" name=\"pass\" value=\"%s\" class=\"field\"><p>", password)
+        fmt.Print("<input type=\"submit\" value=\"Login\" class=\"button\"></form></body></html>")
     }
+    fmt.Print(message)
+    fmt.Print("</div>")
 
-    fmt.Printf("</div>")
-    fmt.Printf("</body></html>")
+    // DEBUG
+    // fmt.Printf("<p>env:[%s]", env)
+    // fmt.Printf("<p>boundary:[%s]", boundary)
+    /* for _, file := range files {
+        fmt.Printf("<p>file_name:[%s]", file.name)
+        fmt.Printf("<p>file_contents:[%s]", file.content)
+    } */
+    // fmt.Printf("<p>username:[%s]", username)
+    // fmt.Printf("<p>password:[%s]", password)
+
+    fmt.Print("</body></html>")
 }
