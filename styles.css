@@ -28,7 +28,7 @@ a, a:hover, a:visited, a:active {
     left: calc(50vw - 200px);
     overflow: hidden;
     backdrop-filter: blur(6px);
-    background-image: linear-gradient(to right bottom, rgba(26, 26, 26, 0.2), rgba(26, 26, 26, 0.3));
+    background-image: linear-gradient(to right bottom, rgba(10, 10, 10, 0.2), rgba(10, 10, 10, 0.3));
 }
 
 .box h1, p {

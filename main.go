@@ -1,4 +1,4 @@
-package main
+package upload
 
 import (
 	"bufio"
@@ -29,7 +29,6 @@ func new_file(name string, content string) (file file_t) {
 func main() {
     // web header
     fmt.Printf("Content-Type: text/html; charset=utf-8\r\n\r\n")
-    // TODO: css
     fmt.Printf("<!DOCTYPE html><html><head><title>upload</title>")
     style, err := os.ReadFile(css)
     if err == nil {
@@ -50,11 +49,7 @@ func main() {
         }
     }
 
-    fmt.Printf("<p>buf:[%s]", buffer)
-
     var files []file_t
-    /* var file_name string
-    var file_contents string */
     var username string
     var password string
 
@@ -167,6 +162,7 @@ func main() {
     // DEBUG
     // fmt.Printf("<p>env:[%s]", env)
     // fmt.Printf("<p>boundary:[%s]", boundary)
+    // fmt.Printf("<p>buf:[%s]", buffer)
     /* for _, file := range files {
         fmt.Printf("<p>file_name:[%s]", file.name)
         fmt.Printf("<p>file_contents:[%s]", file.content)
