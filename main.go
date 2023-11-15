@@ -125,6 +125,7 @@ func main() {
             out_stat, _ := out.Stat()
             if err != nil {
                 message += fmt.Sprintf("<p>Error: %s", err)
+                continue
             }
             if out_stat.Size() > 0 {
                 message += fmt.Sprintf("<p>File already exists: %s", file.name)
