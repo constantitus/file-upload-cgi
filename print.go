@@ -35,16 +35,5 @@ func PrintFooter() {
     fmt.Print(message)
     fmt.Print("</div>")
 
-    // Testing
-    // fmt.Printf("<p>env:[%s]", env)
-    // fmt.Printf("<p>boundary:[%s]", boundary)
-    // fmt.Printf("<p>buf:[%s]", buffer)
-    /* for _, file := range files {
-        fmt.Printf("<p>file_name:[%s]", file.name)
-        fmt.Printf("<p>file_contents:[%s]", file.content)
-    } */
-    // fmt.Printf("<p>username:[%s]", username)
-    // fmt.Printf("<p>password:[%s]", password)
-
     fmt.Print("</body></html>")
 }
