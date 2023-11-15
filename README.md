@@ -1,6 +1,6 @@
 <p align="center">
-    <img src="screenshot1.jpg" width="250" />
-    <img src="screenshot2.jpg" width="250" />
+    <img src="screenshot1.jpg" width="300" />
+    <img src="screenshot2.jpg" width="300" />
 </p>
 
 
