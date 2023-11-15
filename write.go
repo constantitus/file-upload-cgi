@@ -12,7 +12,7 @@ func WriteFiles() {
                 continue
             }
             out, err := os.OpenFile(
-                storageDir + username + "/" + file.name,
+                StorageDir + username + "/" + file.name,
                 os.O_RDWR|os.O_CREATE,
                 0644)
             out_stat, _ := out.Stat()

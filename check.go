@@ -9,7 +9,7 @@ import (
 
 func CheckCredentials() (cred_valid bool) {
     if username != "" {
-        cred_file, err := os.ReadFile(userDir + username + ".txt")
+        cred_file, err := os.ReadFile(UserDir + username + ".txt")
         if err != nil {
             // Username not found
             message += "<p>Wrong username/password"
