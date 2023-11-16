@@ -50,14 +50,7 @@ func main() {
         }
     }
 
-    http_cookie := strings.Split(os.Getenv("HTTP_COOKIE"), "; ")
-    for _, v := range http_cookie {
-        tmp_user, found_user := strings.CutPrefix(v, "username=")
-        if found_user { cookies.user = tmp_user }
-        tmp_pass, found_pass := strings.CutPrefix(v, "passhash=")
-        if found_pass { cookies.pass = tmp_pass }
-    }
-
+    CheckCookies()
     ParseBuffer(buffer, boundary)
     cred_valid := CheckCredentials()
 

@@ -22,5 +22,6 @@ You can also use apache2, but I have no experience using it.
 
 ## TODO
 - [x] Handle existing files (ask to override)
-- [x] optionally store login client side, **only store password hash**
+- [x] Optionally store login client side, **only store password hash**
+- [ ] Log out button
 - [ ] UI to browse, download and delete files

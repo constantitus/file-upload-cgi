@@ -36,4 +36,3 @@ func ParseBuffer(buffer []byte, boundary string) {
         _, overwrite = strings.CutPrefix(v, "name=\"overwrite\"\r\n\r\non")
     }
 }
-
