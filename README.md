@@ -6,11 +6,11 @@
 
 ## CGI File Upload
 Simple file uploading webpage backend with no clientside JS, JQuery or Wasm. \
-To check credentials, it looks for *(UserDir)/(username).txt* file which contains a sha256sum of the password.
-Then it tries to write the file(s) in *(StorageDir)/(username)/(the_file)*. \
+To check credentials, it looks for *(UserDir)/(username).txt* file which contains a sha256sum of the password. Also has the option to store the username and hashed password as cookies. \
+Then it tries to write the file(s) in *(StorageDir)/(username)/(the_file)*. If Overwrite is checked, it will overwrite existing files, otherwise it will skip them. \
 StorageDir and UserDir are empty strings by default, making them relative paths. You can change them in main.go to use absolute paths.
 
-Since the whole file is stored in a string in memory, it is quite limited. Uploading big files a bit weird since there's no way of tracking the upload progress.
+Since the whole content of the file(s) is stored as a string in memory, it is quite limited. Since there's no way of tracking the upload progress, uploading big files gives no feedback to the user until they're done uploading.
 
 ## Building and Useage
 To build, just run `go build -o upload .`
