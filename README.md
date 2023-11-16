@@ -21,6 +21,6 @@ Make sure the fcgiwrap unix sock file is owned by an user which can write to the
 You can also use apache2, but I have no experience using it.
 
 ## TODO
-- [ ] Handle existing files (ask to override)
-- [ ] optionally store login client side, **only store password hash**
+- [x] Handle existing files (ask to override)
+- [x] optionally store login client side, **only store password hash**
 - [ ] UI to browse, download and delete files

@@ -28,15 +28,18 @@ var (
     username string
     password string
     message string
-    cred_valid bool
+    remember bool
+    overwrite bool
+    cookies struct {
+        user string
+        pass string
+    }
 )
 
 func main() {
-    PrintHeader()
-
     var buffer []byte
-    env := os.Getenv("CONTENT_TYPE")
-    boundary, is_reading := strings.CutPrefix(env, "multipart/form-data; boundary=")
+    content_type := os.Getenv("CONTENT_TYPE")
+    boundary, is_reading := strings.CutPrefix(content_type, "multipart/form-data; boundary=")
     if is_reading {
         reader := bufio.NewReader(os.Stdin)
         var err error = nil
@@ -47,11 +50,20 @@ func main() {
         }
     }
 
+    http_cookie := strings.Split(os.Getenv("HTTP_COOKIE"), "; ")
+    for _, v := range http_cookie {
+        tmp_user, found_user := strings.CutPrefix(v, "username=")
+        if found_user { cookies.user = tmp_user }
+        tmp_pass, found_pass := strings.CutPrefix(v, "passhash=")
+        if found_pass { cookies.pass = tmp_pass }
+    }
+
     ParseBuffer(buffer, boundary)
-    cred_valid = CheckCredentials()
+    cred_valid := CheckCredentials()
+
     if cred_valid {
         WriteFiles()
     }
 
-    PrintFooter()
+    PrintHtml(cred_valid)
 }

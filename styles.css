@@ -60,3 +60,50 @@ a, a:hover, a:visited, a:active {
     display: block;
     cursor: pointer;
 }
+
+.check-box {
+    text-align: center;
+    font-size: 1.1em;
+    color: #2b2b2b;
+}
+.check-box label {
+    display: block;
+    width: unset;
+    margin: 0;
+    color: #fff;
+}
+.check-box input {  display: none; }
+
+.check-box label::before {
+    padding: 0;
+    content: "\2714";
+    font-weight: bold;
+    font-size: 0.75em;
+    height: 1em;
+    border: 0.05em solid #000;
+    border-radius: 0.2em;
+    display: inline-block;
+    margin-right: 0.3em;
+    color: transparent;
+    transition: .1s;
+    border-color: #fff;
+}
+.check-box label:active::before {
+    transform: scale(0.8);
+    border-color: #fff;
+}
+.check-box [type=checkbox]:checked + label:before {
+    background-color: #742ECC;
+    border-color: #742ECC;
+    color: #fff;
+}
+.check-box [type=checkbox]:disabled + label:before {
+    transform: scale(1);
+    border-color: #aaa;
+}
+
+.check-box [type=checkbox]:checked:disabled + label:before {
+    transform: scale(1);
+    background-color: #9487d1;
+    border-color: #742ECC;
+}

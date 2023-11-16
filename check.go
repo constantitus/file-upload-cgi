@@ -3,32 +3,39 @@ package main
 import (
 	"crypto/sha256"
 	"encoding/hex"
+	"fmt"
 	"os"
 	"strings"
 )
 
-func CheckCredentials() (cred_valid bool) {
+func CheckCredentials() bool {
     if username != "" {
-        cred_file, err := os.ReadFile(UserDir + username + ".txt")
-        if err != nil {
-            // Username not found
-            message += "<p>Wrong username/password"
-        } else {
-            tmp := sha256.New()
-            tmp.Write([]byte(password))
-            pass_hashed := hex.EncodeToString(tmp.Sum(nil))
-            file_string := strings.TrimSuffix(string(cred_file), "\n")
-            if pass_hashed == file_string {
-                cred_valid = true
-            } else {
-                // Wrong password
-                message += "<p>Wrong username/password"
-            }
-        }
-    } else {
-        //blank the password when there's no username
-        password = ""
+        return Check(username, password, false)
     }
-    return
+    if cookies.user != "" {
+        return Check(cookies.user, cookies.pass, true)
+    }
+    return false
 }
 
+func Check(user string, pass string, hashed bool) bool {
+    cred_file, err := os.ReadFile(UserDir + user + ".txt")
+    if err == nil {
+        file_string := strings.TrimSuffix(string(cred_file), "\n")
+        if hashed && pass == file_string {
+            return true
+        } else {
+            tmp := sha256.New()
+            tmp.Write([]byte(pass))
+            pass = hex.EncodeToString(tmp.Sum(nil))
+            if pass == file_string {
+                if remember {
+                    fmt.Printf("Set-Cookie: username=%s\n", user)
+                    fmt.Printf("Set-Cookie: passhash=%s\n", pass)
+                }
+                return true
+            }
+        }
+    }
+    return false
+}
