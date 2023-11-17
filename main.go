@@ -27,9 +27,11 @@ var (
     files []file_t
     username string
     password string
-    message string
+    message strings.Builder
     remember bool
     overwrite bool
+    logout bool
+    cred_valid bool
     cookies struct {
         user string
         pass string
@@ -50,12 +52,16 @@ func main() {
         }
     }
 
-    CheckCookies()
     ParseBuffer(buffer, boundary)
-    cred_valid := CheckCredentials()
+    if logout {
+        DeleteCookies()
+    } else {
+        CheckCookies()
+        cred_valid = CheckCredentials()
 
-    if cred_valid {
-        WriteFiles()
+        if cred_valid {
+            WriteFiles()
+        }
     }
 
     PrintHtml(cred_valid)

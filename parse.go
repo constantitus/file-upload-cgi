@@ -34,5 +34,7 @@ func ParseBuffer(buffer []byte, boundary string) {
 
         _, remember = strings.CutPrefix(v, "name=\"remember\"\r\n\r\non")
         _, overwrite = strings.CutPrefix(v, "name=\"overwrite\"\r\n\r\non")
+
+        _, logout = strings.CutPrefix(v, `name="logout"`)
     }
 }

@@ -57,15 +57,17 @@ a, a:hover, a:visited, a:active {
     font-size: 20px;
     width: 330px;
     margin: 20px auto;
+    margin-bottom: 5px;
     display: block;
     cursor: pointer;
 }
 
 .box .small-button {
-    display: block;
-    width: unset;
-    margin: 0;
     color: #fff;
+    font-size: 18px;
+    background: none;
+    border: none;
+    margin-left: 32px;
 }
 
 .check-box {

@@ -1,7 +1,7 @@
 package main
 
 import (
-	// "fmt"
+	"fmt"
 	"os"
 	"strings"
 )
@@ -16,7 +16,7 @@ func CheckCookies() {
     }
 }
 
-/* func ClearCookies() {
+func DeleteCookies() {
     fmt.Print("Set-Cookie: username=; expires=Thu, 01 Jan 1970 00:00:00 GMT\n")
     fmt.Print("Set-Cookie: passhash=; expires=Thu, 01 Jan 1970 00:00:00 GMT\n")
-} */
+}
