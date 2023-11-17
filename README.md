@@ -1,6 +1,7 @@
 <p align="center">
-    <img src="screenshot1.jpg" width="300" />
-    <img src="screenshot2.jpg" width="300" />
+    <img src="screenshots/0.jpg" width="250" />
+    <img src="screenshots/1.jpg" width="250" />
+    <img src="screenshots/2.jpg" width="250" />
 </p>
 
 
@@ -22,6 +23,5 @@ You can also use apache2, but I have no experience using it.
 
 ## TODO
 - [x] Handle existing files (ask to override)
-- [x] Optionally store login client side, **only store password hash**
-- [x] Log out button
+- [x] optionally store login client side, **only store password hash**
 - [ ] UI to browse, download and delete files
