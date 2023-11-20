@@ -39,7 +39,7 @@ func WriteFiles() {
 }
 
 func Write(file file_t, out os.File) {
-    out_size, err := out.WriteString(file.content)
+    out_size, err := out.WriteString(file.contents)
     if err != nil {
         message.WriteString(err.Error())
     } else {

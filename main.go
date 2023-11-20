@@ -14,12 +14,12 @@ const StorageDir = ""
 
 type file_t struct {
     name string
-    content string
+    contents string
 }
 
 func new_file(name string, content string) (file file_t) {
     file.name = name
-    file.content = content
+    file.contents = content
     return
 }
 
@@ -27,21 +27,22 @@ var (
     files []file_t
     username string
     password string
-    message strings.Builder
-    remember bool
-    overwrite bool
-    logout bool
-    cred_valid bool
     cookies struct {
         user string
         pass string
     }
+    message strings.Builder
+    remember bool
+    overwrite bool
+    logout bool
+    creds_valid bool
 )
 
 func main() {
     var buffer []byte
     content_type := os.Getenv("CONTENT_TYPE")
     boundary, is_reading := strings.CutPrefix(content_type, "multipart/form-data; boundary=")
+
     if is_reading {
         reader := bufio.NewReader(os.Stdin)
         var err error = nil
@@ -57,12 +58,12 @@ func main() {
         DeleteCookies()
     } else {
         CheckCookies()
-        cred_valid = CheckCredentials()
+        creds_valid = CheckCredentials()
 
-        if cred_valid {
+        if creds_valid {
             WriteFiles()
         }
     }
 
-    PrintHtml(cred_valid)
+    PrintHtml(creds_valid)
 }
