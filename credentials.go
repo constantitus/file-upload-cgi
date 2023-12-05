@@ -8,14 +8,13 @@ import (
 	"strings"
 )
 
-func CheckCredentials() bool {
+func CheckCredentials() {
     if username != "" {
-        return Check(username, password, false)
+        creds_valid = Check(username, password, false)
     }
     if cookies.user != "" {
-        return Check(cookies.user, cookies.pass, true)
+        creds_valid = Check(cookies.user, cookies.pass, true)
     }
-    return false
 }
 
 func Check(user string, pass string, cookie bool) bool {

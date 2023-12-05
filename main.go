@@ -17,9 +17,9 @@ type file_t struct {
     contents string
 }
 
-func new_file(name string, content string) (file file_t) {
+func new_file(name string, contents string) (file file_t) {
     file.name = name
-    file.contents = content
+    file.contents = contents
     return
 }
 
@@ -42,7 +42,6 @@ func main() {
     var buffer []byte
     content_type := os.Getenv("CONTENT_TYPE")
     boundary, is_reading := strings.CutPrefix(content_type, "multipart/form-data; boundary=")
-
     if is_reading {
         reader := bufio.NewReader(os.Stdin)
         var err error = nil
@@ -53,17 +52,17 @@ func main() {
         }
     }
 
-    ParseBuffer(buffer, boundary)
+    ParseBuffer(&buffer, &boundary)
     if logout {
         DeleteCookies()
     } else {
         CheckCookies()
-        creds_valid = CheckCredentials()
+        CheckCredentials()
 
         if creds_valid {
             WriteFiles()
         }
     }
 
-    PrintHtml(creds_valid)
+    PrintHtml()
 }

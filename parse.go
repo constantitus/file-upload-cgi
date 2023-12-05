@@ -2,8 +2,8 @@ package main
 
 import "strings"
 
-func ParseBuffer(buffer []byte, boundary string) {
-    input := strings.Split(string(buffer), boundary)
+func ParseBuffer(buffer *[]byte, boundary *string) {
+    input := strings.Split(string(*buffer), *boundary)
     for _, v := range input {
         var cut_status bool
         v, cut_status = strings.CutPrefix(v, "\r\nContent-Disposition: form-data; ")

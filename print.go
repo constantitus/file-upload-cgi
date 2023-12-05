@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-func PrintHtml(cred_valid bool) {
+func PrintHtml() {
     var page strings.Builder
 
     page.WriteString("Content-Type: text/html; charset=utf-8\r\n\r\n")
@@ -27,7 +27,7 @@ func PrintHtml(cred_valid bool) {
     <body>
         <div class="box">
             <form method="post" enctype="multipart/form-data">`,)
-    if cred_valid {
+    if creds_valid {
         page.WriteString(`
                 <input type="hidden" name="user" value="`)
         page.WriteString(username)
